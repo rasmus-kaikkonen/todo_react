@@ -8,7 +8,8 @@ const { sign } = jwt
 const __dirname = import.meta.dirname
 
 const intializeTestDb = () => {
-    const sql = fs.readFileSync(path.resolve(__dirname,"../todo.sql"), "utf8");
+    const sql = fs.readFileSync(path.resolve(__dirname,"../db.sql"), "utf8")
+    console.log(__dirname)
     pool.query(sql)
 }
 
