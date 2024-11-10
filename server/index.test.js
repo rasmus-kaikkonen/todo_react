@@ -2,7 +2,7 @@
 /* eslint-disable jest/valid-expect */
 /* eslint-disable no-unused-expressions */
 import { expect } from "chai";
-import { getToken, inserTestUser, intializeTestDb } from "./helpers/test.js";
+import { getToken, insertTestUser, initializeTestDb } from "./helpers/test.js";
 
 const base_url = 'http://localhost:3001'
 
@@ -10,7 +10,7 @@ const base_url = 'http://localhost:3001'
 
 describe('GET Tasks', () => {
     before(() => {
-        intializeTestDb()
+        initializeTestDb()
     });
     
     it('should get all tasks',async() => {
@@ -26,7 +26,7 @@ describe('GET Tasks', () => {
 describe('POST task',() => {
     const email = 'post@foo.com'
     const password = 'post123'
-    inserTestUser(email,password)
+    insertTestUser(email,password)
     const token = getToken(email)
     it('should post a task', async() => {
         const response = await fetch(base_url + '/create', {
@@ -77,7 +77,7 @@ describe('POST task',() => {
 describe('DELETE task', () => {
     const email = 'post@foo.com'
     const password = 'post123'
-    inserTestUser(email,password)
+    insertTestUser(email,password)
     const token = getToken(email)
     it('should delete a task',async() => {
         const response = await fetch(base_url + '/delete/1', {
@@ -106,7 +106,7 @@ describe('DELETE task', () => {
 })
 
 describe('POST register', () => {
-    const email = 'register@foo.com'
+    const email = 'register@foobsi.com'
     const password = 'register123'
     it('should register with valid email and password',async() => {
         const response = await fetch(base_url + '/user/register',{
@@ -121,12 +121,28 @@ describe('POST register', () => {
         expect(data).to.be.an('object')
         expect(data).to.include.all.keys('id','email')
     })
+
+    it('should not post a user with less than 8 character password',async() => {
+        const email = 'register@foobsie.com'
+        const password = 'short1'
+        const response = await fetch(base_url + '/user/register',{
+            method: 'post',
+            headers: {
+                'Content-Type':'application/json'
+            },
+            body: JSON.stringify({'email':email,'password':password})
+        })
+        const data = await response.json()
+        expect(response.status).to.equal(400,data.error)
+        expect(data).to.be.an('object')
+        expect(data).to.include.all.keys('error')
+    })
 })
 
 describe('POST login',() => {
-    const email = 'login@foo.com'
+    const email = 'login@foob.com'
     const password = 'login123'
-    inserTestUser(email,password)
+    insertTestUser(email,password)
     it('should login with valid credentials',async() => {
         const response = await fetch(base_url + '/user/login',{
             method: 'post',

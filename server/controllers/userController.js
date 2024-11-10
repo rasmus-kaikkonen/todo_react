@@ -1,7 +1,9 @@
 import { compare, hash } from "bcrypt";
-import { insertUser, selectUserByEmail } from "../models/User";
-import { ApiError } from "../helpers/error";
-import { sign } from "jsonwebtoken";
+import { insertUser, selectUserByEmail } from "../models/User.js";
+import { ApiError } from "../helpers/error.js";
+import jwt from "jsonwebtoken";
+
+const { sign } = jwt
 
 const postRegistration = async(req,res,next) => {
     try {
